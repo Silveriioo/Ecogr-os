@@ -10,7 +10,16 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
     $userEmail = $userdata['email'];
     $logado = true;
     include_once('../../controller/utils/functions/funtions.php');
-    BuscaUsuarios($userId);
+    $userinfo = BuscaUsuarios($userEmail);
+    if ($userinfo) {
+        $nome = $userinfo['nome'];
+        $data = $userinfo['data'];
+        $cpf = $userinfo['cpf'];
+        $email = $userinfo['email'];
+        $celular = $userinfo['celular'];
+    } else {
+        echo "Nenhum usuário encontrado com o email $userEmail";
+    }
 } else {
     $logado = false;
     include_once('../../controller/utils/functions/funtions.php');
@@ -24,6 +33,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EcoGrão</title>
+    <script type="module" src="../../controller/script/redefineUser.js"></script>
     <!-- TailwindCss -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../../controller/tailwindcss/tailwindcss.js"></script>
@@ -113,7 +123,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
 
     <!-- CONTEUDO -->
     <div class="p-12 w-full h-full flex justify-center items-center ">
-        <form>
+        <form method="POST" id="redefinir">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Seu Perfil</h2>
@@ -130,7 +140,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                                     <div class="mt-4 flex text-sm leading-6 text-gray-600">
                                         <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
                                             <span>Enviar um arquivo</span>
-                                            <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                                            <input id="upload" name="file-upload" type="file" class="sr-only">
                                         </label>
                                         <p class="pl-1">ou arraste e solte</p>
                                     </div>
@@ -145,32 +155,34 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informações pessoais</h2>
                     <p class="mt-1 text-sm leading-6 text-gray-600">Use um endereço permanente onde você possa receber notificações e acompanhar seus pedidos.</p>
 
+                        <input type="hidden" id="id" name="id" value="<?php echo $userId; ?>">
+
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-3">
                             <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">Nome Completo</label>
                             <div class="mt-2">
-                                <input type="text" name="first-name" id="nome" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="first-name" id="nome" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="<?php echo $nome; ?>">
                             </div>
                         </div>
 
                         <div class="sm:col-span-4">
                             <label for="date" class="block text-sm font-medium leading-6 text-gray-900">Data de Nascimento</label>
                             <div class="mt-2">
-                                <input id="date" name="date" type="date" autocomplete="date" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input id="date" name="date" type="date" autocomplete="date" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="<?php echo $data; ?>">
                             </div>
                         </div>
 
                         <div class="sm:col-span-4">
                             <label for="cpf" class="block text-sm font-medium leading-6 text-gray-900">CPF</label>
                             <div class="mt-2">
-                                <input id="cpf" name="cpf" type="text" autocomplete="cpf" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input id="cpf" name="cpf" type="text" autocomplete="cpf" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="<?php echo $cpf; ?>">
                             </div>
                         </div>
 
                         <div class="sm:col-span-4">
                             <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Endereço de Email</label>
                             <div class="mt-2">
-                                <input id="email" name="email" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input id="email" name="email" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="<?php echo $email; ?>">
                             </div>
                         </div>
 
@@ -178,49 +190,36 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                             <label for="celular" class="block text-sm font-medium leading-6 text-gray-900">Número de Celular</label>
                             <div class="mt-2">
                                 <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                                    <span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm">DDD</span>
-                                    <input type="tel" name="celular" id="celular" autocomplete="celular" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="(**) *****-****">
+                                    <input type="tel" name="celular" id="celular" autocomplete="celular" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="(**) *****-****" value="<?php echo $celular; ?>">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- <div class="sm:col-span-3">
-                            <label for="country" class="block text-sm font-medium leading-6 text-gray-900">País</label>
-                            <div class="mt-2">
-                                <select id="country" name="country" autocomplete="country-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                                    <option>Brasil</option>
-                                    <option>USA</option>
-                                    <option>Canada</option>
-                                    <option>Mexico</option>
-                                </select>
-                            </div>
-                        </div> -->
-
                         <div class="col-span-full">
                             <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Endereço da Rua</label>
                             <div class="mt-2">
-                                <input type="text" name="street-address" id="street-address" autocomplete="street-address" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="street-address" id="rua" autocomplete="street-address" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
 
                         <div class="sm:col-span-2 sm:col-start-1">
                             <label for="city" class="block text-sm font-medium leading-6 text-gray-900">Cidade</label>
                             <div class="mt-2">
-                                <input type="text" name="city" id="city" autocomplete="address-level2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="city" id="cidade" autocomplete="address-level2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
 
                         <div class="sm:col-span-2">
                             <label for="region" class="block text-sm font-medium leading-6 text-gray-900">Estado / Província</label>
                             <div class="mt-2">
-                                <input type="text" name="region" id="region" autocomplete="address-level1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="region" id="regiao" autocomplete="address-level1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
 
                         <div class="sm:col-span-2">
                             <label for="postal-code" class="block text-sm font-medium leading-6 text-gray-900">CEP / Código Postal</label>
                             <div class="mt-2">
-                                <input type="text" name="postal-code" id="postal-code" autocomplete="postal-code" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="postal-code" id="cep" autocomplete="postal-code" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
 
@@ -228,7 +227,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                             <label for="about" class="block text-sm font-medium leading-6 text-gray-900">Adicional<span class="text-xs select-none items-center pl-3 text-gray-500 ">(Opcional)</span></label>
 
                             <div class="mt-2">
-                                <textarea id="about" name="about" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                <textarea id="adicional" name="about" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                             </div>
                             <p class="mt-3 text-sm leading-6 text-gray-600">Escreva algo importante para que seja util.</p>
                         </div>
@@ -245,10 +244,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                             <div class="mt-6 space-y-6">
                                 <div class="relative flex gap-x-3">
                                     <div class="flex h-6 items-center">
-                                        <input id="comments" name="comments" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                                        <input id="comentarios" value="comentarios" name="comentarios" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
                                     </div>
                                     <div class="text-sm leading-6">
-                                        <label for="comments" class="font-medium text-gray-900">Comentarios</label>
+                                        <label for="comentarios" class="font-medium text-gray-900">Comentarios</label>
                                         <p class="text-gray-500">Seja notificado quando alguém postar um comentário em um produto favorito.</p>
                                     </div>
                                 </div>
@@ -256,32 +255,14 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
 
                                     <div class="relative flex gap-x-3">
                                         <div class="flex h-6 items-center">
-                                            <input id="offers" name="offers" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                                            <input id="ofertas" value="ofertas" name="ofertas" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
                                         </div>
                                         <div class="text-sm leading-6">
-                                            <label for="offers" class="font-medium text-gray-900">Ofertas</label>
+                                            <label for="ofertas" class="font-medium text-gray-900">Ofertas</label>
                                             <p class="text-gray-500">Seja notificado quando um novo produto ou oferta for anunciado.</p>
                                         </div>
                                     </div>
                                 </div>
-                        </fieldset>
-                        <fieldset>
-                            <legend class="text-sm font-semibold leading-6 text-gray-900">Notificações via SMS</legend>
-                            <p class="mt-1 text-sm leading-6 text-gray-600">Estes são entregues via SMS para o seu celular.</p>
-                            <div class="mt-6 space-y-6">
-                                <div class="flex items-center gap-x-3">
-                                    <input id="push-everything" name="push-notifications" type="radio" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                                    <label for="push-everything" class="block text-sm font-medium leading-6 text-gray-900">Tudo</label>
-                                </div>
-                                <div class="flex items-center gap-x-3">
-                                    <input id="push-email" name="push-notifications" type="radio" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                                    <label for="push-email" class="block text-sm font-medium leading-6 text-gray-900">O mesmo que o email</label>
-                                </div>
-                                <div class="flex items-center gap-x-3">
-                                    <input id="push-nothing" name="push-notifications" type="radio" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                                    <label for="push-nothing" class="block text-sm font-medium leading-6 text-gray-900">Não enviar por SMS</label>
-                                </div>
-                            </div>
                         </fieldset>
                     </div>
                 </div>

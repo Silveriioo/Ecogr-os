@@ -115,7 +115,14 @@ CREATE TABLE ecograos.pedidos (
     FOREIGN KEY (produto_id) REFERENCES ecograos.produtos(id)
 );
 
-
+CREATE TABLE ecograos.enderecos (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  rua VARCHAR(150) NOT NULL,
+  cidade VARCHAR(150) NOT NULL,
+  estado VARCHAR(150) NOT NULL,
+  cep CHAR(50) NOT NULL,
+  adicionais VARCHAR(1000)
+);
 
 
 
@@ -131,7 +138,23 @@ VALUES
 
 -- Inserir um novo produto
 INSERT INTO ecograos.produtos (categoria, imagens, descricao, valor, nome, detalhes)
-VALUES ('Cenoura', 'https://photos.app.goo.gl/sT1gkX1HYE4y71Xx7', 'Cenoura', 19.99, 'Cenoura', 'Cenoura');
+VALUES
+('categoria1', 'https://i.ibb.co/NYdkTP2/16.png', 'Descrição do produto 1', 19.99, 'Produto 1', 'Detalhes do produto 1'),
+('categoria2', 'https://i.ibb.co/5nK6C29/14.png', 'Descrição do produto 2', 29.99, 'Produto 2', 'Detalhes do produto 2'),
+('categoria3', 'https://i.ibb.co/Fw12P0b/15.png', 'Descrição do produto 3', 39.99, 'Produto 3', 'Detalhes do produto 3'),
+('categoria4', 'https://i.ibb.co/615LhhL/13.png', 'Descrição do produto 4', 49.99, 'Produto 4', 'Detalhes do produto 4'),
+('categoria5', 'https://i.ibb.co/HNsg5N6/12.png', 'Descrição do produto 5', 59.99, 'Produto 5', 'Detalhes do produto 5'),
+('categoria1', 'https://i.ibb.co/VTNjw5P/11.png', 'Descrição do produto 6', 69.99, 'Produto 6', 'Detalhes do produto 6'),
+('categoria2', 'https://i.ibb.co/n8Pn3Nn/10.png', 'Descrição do produto 7', 79.99, 'Produto 7', 'Detalhes do produto 7'),
+('categoria3', 'https://i.ibb.co/Jy76Dy2/9.png', 'Descrição do produto 8', 89.99, 'Produto 8', 'Detalhes do produto 8'),
+('categoria4', 'https://i.ibb.co/Jxv494d/8.png', 'Descrição do produto 9', 99.99, 'Produto 9', 'Detalhes do produto 9'),
+('categoria5', 'https://i.ibb.co/sHK9XVX/6.png', 'Descrição do produto 10', 109.99, 'Produto 10', 'Detalhes do produto 10'),
+('categoria1', 'https://i.ibb.co/Svbjj99/7.png', 'Descrição do produto 11', 119.99, 'Produto 11', 'Detalhes do produto 11'),
+('categoria2', 'https://i.ibb.co/hLGRSjd/5.png', 'Descrição do produto 12', 129.99, 'Produto 12', 'Detalhes do produto 12'),
+('categoria3', 'https://i.ibb.co/FnGNF49/4.png', 'Descrição do produto 14', 149.99, 'Produto 14', 'Detalhes do produto 14'),
+('categoria5', 'https://i.ibb.co/K03W7NL/3.png', 'Descrição do produto 15', 159.99, 'Produto 15', 'Detalhes do produto 15'),
+('categoria5', 'https://i.ibb.co/bW6LwJR/2.png', 'Descrição do produto 15', 159.99, 'Produto 15', 'Detalhes do produto 15');
+
 
 
 -- Inserir um novo pedido

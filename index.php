@@ -732,7 +732,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                 </button>
               </div>
 
-              
+
             </div>
           </div>
         </div>
@@ -782,10 +782,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
 
           <section aria-labelledby="products-heading" class="pb-24 pt-6">
             <h2 id="products-heading" class="sr-only">Products</h2>
-
             <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-3">
-              
-
               <!-- Lista de Produto -->
               <div class="lg:col-span-3">
                 <div class="bg-white">

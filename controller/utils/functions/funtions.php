@@ -475,7 +475,7 @@ function ListaProdutos()
         <div class="mt-4 flex justify-between">
           <div>
             <h3 class="text-sm text-gray-700">
-              <a href="produto.php?id=' . $id . '">
+              <a href="view/pages/produto?id=' . $id . '">
                 <span aria-hidden="true" class="absolute inset-0"></span>
                 ' . $nome . '
               </a>
@@ -491,19 +491,19 @@ function ListaProdutos()
   }
 }
 
-function BuscaUsuarios($userId)
+function BuscaUsuarios($userEmail)
 {
   global $conn;
   $conn = connection();
 
-  $sql = 'CALL ObterUsuarioPorID(?)';
+  $sql = 'CALL ObterUsuarioPorEMAIL(?)';
   $stmt = mysqli_prepare($conn, $sql);
 
   if ($stmt === false) {
     die("Erro ao preparar a declaração: " . mysqli_error($conn));
   }
 
-  mysqli_stmt_bind_param($stmt, "s", $userId);
+  mysqli_stmt_bind_param($stmt, "s", $userEmail);
 
   $result = mysqli_stmt_execute($stmt);
 
@@ -513,18 +513,70 @@ function BuscaUsuarios($userId)
     $row = mysqli_fetch_assoc($result);
 
     if ($row) {
-      $id = $row['id'];
-      $nome = $row['nome'];
-      $email = $row['email'];
-      $cpf = $row['cpf'];
-      $celular = $row['celular'];
-      $data = $row['data'];
-      $senha = $row['senha'];
-
+      $userinfo = array(
+        'id' => $row['id'],
+        'nome' => $row['nome'],
+        'email' => $row['email'],
+        'cpf' => $row['cpf'],
+        'celular' => $row['celular'],
+        'data' => $row['data'],
+      );
+      return $userinfo;
     } else {
-      echo "Nenhum usuário encontrado com o ID $userId";
+      echo "Nenhum usuário encontrado com o ID $userEmail";
     }
   } else {
     echo "Erro na consulta: " . mysqli_error($conn);
+  }
+}
+
+function InfoUser()
+{
+
+  $userinfo = array(
+    "id" => $$_POST['id'],
+    "nome" => $_POST['nome'],
+    "date" => $_POST['date'],
+    "cpf" => $_POST['cpf'],
+    "email" => $_POST['email'],
+    "celular" => $_POST['celular'],
+    "rua" => $_POST['rua'],
+    "cidade" => $_POST['cidade'],
+    "regiao" => $_POST['regiao'],
+    "cep" => $_POST['cep'],
+    "comentarios" => $_POST['comentarios'],
+    "ofertas" => $_POST['ofertas'],
+    "adicional" => $_POST['adicional'],
+  );
+
+  return $userinfo;
+}
+
+function RedefineUser()
+{
+
+  global $conn;
+  $conn = connection();
+
+  $userinfo = InfoUser();
+
+  $sql = 'CALL AtualizarUsuarioPorID(?, ?, ?, ?, ?, ?)';
+  $stmt = mysqli_prepare($conn, $sql);
+
+  if ($stmt === false) {
+    die("Erro ao preparar a declaração: " . mysqli_error($conn));
+  }
+
+  mysqli_stmt_bind_param($stmt, "ssssss", $userinfo['id'], $userinfo['nome'], $userinfo['email'], $userinfo['cpf'], $userinfo['celular'], $userinfo['date']);
+
+  $result = mysqli_stmt_execute($stmt);
+
+
+  if ($result) {
+    // echo "As informações foram atualizadas com sucesso!";
+    echo json_encode(['success' => true]);
+  } else {
+    // echo "Ocorreu um erro ao atualizar as informações: " . mysqli_error($conn);
+    echo json_encode(['success' => false, 'message' => 'Ocorreu um erro ao atualizar as informações']);
   }
 }
