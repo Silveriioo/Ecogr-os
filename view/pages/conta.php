@@ -9,6 +9,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
     $userId = $userdata['id'];
     $userEmail = $userdata['email'];
     $logado = true;
+    include_once('../../controller/utils/functions/funtions.php');
+    BuscaUsuarios($userId);
 } else {
     $logado = false;
     include_once('../../controller/utils/functions/funtions.php');
@@ -21,7 +23,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="../../controller/script/functions/functions.js"></script>
     <title>EcoGrão</title>
     <!-- TailwindCss -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,6 +31,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
     <!-- Jquery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <!-- <script type="module" src="../../controller/script/responsive.js"></script> -->
 </head>
 
 <body>
@@ -39,230 +42,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
             <div class="fixed inset-0 bg-black bg-opacity-25"></div>
             <div class="fixed inset-0 z-40 flex">
                 <div class="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
-                    <div class="flex px-4 pb-2 pt-5">
-                        <button type="button" class="relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400" id="buttonCloseMenuMobile">
-                            <span class="absolute -inset-0.5"></span>
-                            <span class="sr-only">Close menu</span>
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
 
-                    <div class="mt-2">
-                        <div class="border-b border-gray-200">
-                            <div class="-mb-px flex space-x-8 px-4" aria-orientation="horizontal" role="tablist">
-                                <button id="buttonMenuMobile1" class="border-transparent text-gray-900 flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium" aria-controls="tabs-1-panel-1" role="tab" type="button">
-                                    Women
-                                </button>
-                                <button id="buttonMenuMobile2" class="border-transparent text-gray-900 flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium" aria-controls="tabs-1-panel-2" role="tab" type="button">
-                                    Men
-                                </button>
-                            </div>
-                        </div>
-
-                        <div id="MenuMobile1" class="space-y-10 px-4 pb-8 pt-10 hidden" aria-labelledby="buttonMenuMobile1" role="tabpanel" tabindex="0">
-                            <div class="grid grid-cols-2 gap-x-4">
-                                <div class="group relative text-sm">
-                                    <div class="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
-                                        <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-01.jpg" alt="Models sitting back to back, wearing Basic Tee in black and bone." class="object-cover object-center" />
-                                    </div>
-                                    <a href="#" class="mt-6 block font-medium text-gray-900">
-                                        <span class="absolute inset-0 z-10" aria-hidden="true"></span>
-                                        New Arrivals
-                                    </a>
-                                    <p aria-hidden="true" class="mt-1">Shop now</p>
-                                </div>
-                                <div class="group relative text-sm">
-                                    <div class="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
-                                        <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-02.jpg" alt="Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees." class="object-cover object-center" />
-                                    </div>
-                                    <a href="#" class="mt-6 block font-medium text-gray-900">
-                                        <span class="absolute inset-0 z-10" aria-hidden="true"></span>
-                                        Basic Tees
-                                    </a>
-                                    <p aria-hidden="true" class="mt-1">Shop now</p>
-                                </div>
-                            </div>
-                            <div>
-                                <p id="women-clothing-heading-mobile" class="font-medium text-gray-900">
-                                    Clothing
-                                </p>
-                                <ul role="list" aria-labelledby="women-clothing-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Tops</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Dresses</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Pants</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Denim</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Sweaters</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">T-Shirts</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Jackets</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Activewear</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Browse All</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <p id="women-accessories-heading-mobile" class="font-medium text-gray-900">
-                                    Accessories
-                                </p>
-                                <ul role="list" aria-labelledby="women-accessories-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Watches</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Wallets</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Bags</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Sunglasses</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Hats</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Belts</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <p id="women-brands-heading-mobile" class="font-medium text-gray-900">
-                                    Brands
-                                </p>
-                                <ul role="list" aria-labelledby="women-brands-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Full Nelson</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">My Way</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Re-Arranged</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Counterfeit</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Significant Other</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div id="MenuMobile2" class="space-y-10 px-4 pb-8 pt-10 hidden" aria-labelledby="buttonMenuMobile2" role="tabpanel" tabindex="0">
-                            <div class="grid grid-cols-2 gap-x-4">
-                                <div class="group relative text-sm">
-                                    <div class="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
-                                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg" alt="Drawstring top with elastic loop closure and textured interior padding." class="object-cover object-center" />
-                                    </div>
-                                    <a href="#" class="mt-6 block font-medium text-gray-900">
-                                        <span class="absolute inset-0 z-10" aria-hidden="true"></span>
-                                        New Arrivals
-                                    </a>
-                                    <p aria-hidden="true" class="mt-1">Shop now</p>
-                                </div>
-                                <div class="group relative text-sm">
-                                    <div class="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
-                                        <img src="https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-06.jpg" alt="Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt." class="object-cover object-center" />
-                                    </div>
-                                    <a href="#" class="mt-6 block font-medium text-gray-900">
-                                        <span class="absolute inset-0 z-10" aria-hidden="true"></span>
-                                        Artwork Tees
-                                    </a>
-                                    <p aria-hidden="true" class="mt-1">Shop now</p>
-                                </div>
-                            </div>
-                            <div>
-                                <p id="men-clothing-heading-mobile" class="font-medium text-gray-900">
-                                    Clothing
-                                </p>
-                                <ul role="list" aria-labelledby="men-clothing-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Tops</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Pants</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Sweaters</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">T-Shirts</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Jackets</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Activewear</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Browse All</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <p id="men-accessories-heading-mobile" class="font-medium text-gray-900">
-                                    Accessories
-                                </p>
-                                <ul role="list" aria-labelledby="men-accessories-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Watches</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Wallets</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Bags</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Sunglasses</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Hats</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Belts</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <p id="men-brands-heading-mobile" class="font-medium text-gray-900">
-                                    Brands
-                                </p>
-                                <ul role="list" aria-labelledby="men-brands-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Re-Arranged</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Counterfeit</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">Full Nelson</a>
-                                    </li>
-                                    <li class="flow-root">
-                                        <a href="#" class="-m-2 block p-2 text-gray-500">My Way</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="space-y-6 border-t border-gray-200 px-4 py-6">
                         <div class="flow-root">
@@ -296,20 +76,18 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
             <nav aria-label="Top" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="border-b border-gray-200">
                     <div class="flex h-16 items-center">
-                        <button type="button" class="relative rounded-md bg-white p-2 text-gray-400 lg:hidden" id="buttonOpenMenu">
-                            <span class="absolute -inset-0.5"></span>
-                            <span class="sr-only">Open menu</span>
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        <button onclick="backPage()" id="backPage1" class="relative rounded-md bg-white p-2 text-gray-400 lg:hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                             </svg>
                         </button>
 
                         <div class="hidden lg:ml-8 lg:block lg:self-stretch">
                             <div class="flex h-full space-x-8 p-6">
-                                <button id="backPage" onclick="backPage()">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
-                                    <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-                                </svg>
+                                <button onclick="backPage()" id="backPage2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
@@ -342,37 +120,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                     <p class="mt-1 text-sm leading-6 text-gray-600">Essas informações serão exibidas somente para fins de pagamento e entrega.</p>
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div class="sm:col-span-4">
-                            <label for="username" class="block text-sm font-medium leading-6 text-gray-900">Nome de usuário</label>
-                            <div class="mt-2">
-                                <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                                    <span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm">ecograos.com/</span>
-                                    <input type="text" name="username" id="username" autocomplete="username" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="Nome de Usuário">
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="col-span-full">
-                            <label for="about" class="block text-sm font-medium leading-6 text-gray-900">Sobre<span class="text-xs select-none items-center pl-3 text-gray-500 ">(Opcional)</span></label>
-
-                            <div class="mt-2">
-                                <textarea id="about" name="about" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
-                            </div>
-                            <p class="mt-3 text-sm leading-6 text-gray-600">Escreva algo importante para que seja util.</p>
-                        </div>
-
-                        <div class="col-span-full">
-                            <label for="photo" class="block text-sm font-medium leading-6 text-gray-900">Foto</label>
-                            <div class="mt-2 flex items-center gap-x-3">
-                                <svg class="h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
-                                </svg>
-                                <button type="button" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Carregar</button>
-                            </div>
-                        </div>
-
-                        <div class="col-span-full">
-                            <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">Foto de capa</label>
+                            <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">Foto</label>
                             <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                                 <div class="text-center">
                                     <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -398,28 +147,35 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-3">
-                            <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">Primeiro nome</label>
+                            <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">Nome Completo</label>
                             <div class="mt-2">
-                                <input type="text" name="first-name" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Sobrenome</label>
-                            <div class="mt-2">
-                                <input type="text" name="last-name" id="last-name" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="first-name" id="nome" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
 
                         <div class="sm:col-span-4">
-                            <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Endereço de email</label>
+                            <label for="date" class="block text-sm font-medium leading-6 text-gray-900">Data de Nascimento</label>
+                            <div class="mt-2">
+                                <input id="date" name="date" type="date" autocomplete="date" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-4">
+                            <label for="cpf" class="block text-sm font-medium leading-6 text-gray-900">CPF</label>
+                            <div class="mt-2">
+                                <input id="cpf" name="cpf" type="text" autocomplete="cpf" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-4">
+                            <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Endereço de Email</label>
                             <div class="mt-2">
                                 <input id="email" name="email" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
 
                         <div class="sm:col-span-4">
-                            <label for="celular" class="block text-sm font-medium leading-6 text-gray-900">Número de celular</label>
+                            <label for="celular" class="block text-sm font-medium leading-6 text-gray-900">Número de Celular</label>
                             <div class="mt-2">
                                 <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                                     <span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm">DDD</span>
@@ -428,7 +184,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3">
+                        <!-- <div class="sm:col-span-3">
                             <label for="country" class="block text-sm font-medium leading-6 text-gray-900">País</label>
                             <div class="mt-2">
                                 <select id="country" name="country" autocomplete="country-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
@@ -438,10 +194,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                                     <option>Mexico</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="col-span-full">
-                            <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">endereço da Rua</label>
+                            <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Endereço da Rua</label>
                             <div class="mt-2">
                                 <input type="text" name="street-address" id="street-address" autocomplete="street-address" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
@@ -467,6 +223,15 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                                 <input type="text" name="postal-code" id="postal-code" autocomplete="postal-code" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             </div>
                         </div>
+
+                        <div class="col-span-full">
+                            <label for="about" class="block text-sm font-medium leading-6 text-gray-900">Adicional<span class="text-xs select-none items-center pl-3 text-gray-500 ">(Opcional)</span></label>
+
+                            <div class="mt-2">
+                                <textarea id="about" name="about" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                            </div>
+                            <p class="mt-3 text-sm leading-6 text-gray-600">Escreva algo importante para que seja util.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -488,14 +253,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                                     </div>
                                 </div>
                                 <div class="relative flex gap-x-3">
-                                    <!-- <div class="flex h-6 items-center">
-                         <input id="candidates" name="candidates" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                        </div>
-                         <div class="text-sm leading-6">
-                          <label for="candidates" class="font-medium text-gray-900">Candidates</label>
-                          <p class="text-gray-500">Get notified when a candidate applies for a job.</p>
-                        </div> 
-                      </div>-->
+
                                     <div class="relative flex gap-x-3">
                                         <div class="flex h-6 items-center">
                                             <input id="offers" name="offers" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
@@ -538,6 +296,16 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
 
     <!-- CONTEUDO -->
 
+    <script>
+        document.getElementById("backPage2").addEventListener("click", function() {
+            backPage();
+        });
+
+        function backPage() {
+            console.error(error);
+            window.history.back();
+        }
+    </script>
 </body>
 
 </html>

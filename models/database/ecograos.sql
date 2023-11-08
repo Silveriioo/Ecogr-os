@@ -6,7 +6,8 @@ CREATE TABLE ecograos.usuarios(
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    cpf VARCHAR(14) NOT NULL,
+    cpf CHAR(14) NOT NULL,
+    celular CHAR(11) NOT NULL,
     data DATE NOT NULL,
     senha VARCHAR(355) NOT NULL,
     log_max INT DEFAULT 0, 
@@ -124,13 +125,13 @@ SELECT * FROM ecograos.pedidos;
 
 
 -- Inserir um novo usuário
-INSERT INTO ecograos.usuarios (nome, email, cpf, data, senha)
-VALUES ('Nome do Usuário', 'usuario@email.com', '123.456.789-00', '2000-01-01', 'senha_segura');
-
+INSERT INTO ecograos.usuarios (nome, email, cpf, celular, data, senha, log_max, bloqueado)
+VALUES
+  ('Pedro Henrique', 'pedroh.shipolito@gmail.com', '123.456.789-01', '11999999999', '2003-11-01', '01112003', 0, 0);
 
 -- Inserir um novo produto
 INSERT INTO ecograos.produtos (categoria, imagens, descricao, valor, nome, detalhes)
-VALUES ('Categoria do Produto', 'https://i0.wp.com/www.sindicatoruraldebelavista.com.br/wp-content/uploads/2011/06/05033449000.jpg?fit=650%2C435&ssl=1', 'Descrição do Produto', 49.99, 'Nome do Produto', 'Detalhes adicionais do produto');
+VALUES ('Cenoura', 'https://photos.app.goo.gl/sT1gkX1HYE4y71Xx7', 'Cenoura', 19.99, 'Cenoura', 'Cenoura');
 
 
 -- Inserir um novo pedido

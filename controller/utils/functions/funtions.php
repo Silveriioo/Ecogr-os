@@ -280,20 +280,9 @@ function RedefineModal()
                 <div
                   class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
                 >
-                  <svg
-                    class="h-6 w-6 text-red-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c-1.73 0-2.813-1.874-1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-                    />
-                  </svg>
+                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
                 </div>
                 <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                   <h3
@@ -499,5 +488,43 @@ function ListaProdutos()
     ';
 
     echo $html;
+  }
+}
+
+function BuscaUsuarios($userId)
+{
+  global $conn;
+  $conn = connection();
+
+  $sql = 'CALL ObterUsuarioPorID(?)';
+  $stmt = mysqli_prepare($conn, $sql);
+
+  if ($stmt === false) {
+    die("Erro ao preparar a declaração: " . mysqli_error($conn));
+  }
+
+  mysqli_stmt_bind_param($stmt, "s", $userId);
+
+  $result = mysqli_stmt_execute($stmt);
+
+  $result = mysqli_stmt_get_result($stmt);
+  $row = mysqli_fetch_assoc($result);
+  if ($result) {
+    $row = mysqli_fetch_assoc($result);
+
+    if ($row) {
+      $id = $row['id'];
+      $nome = $row['nome'];
+      $email = $row['email'];
+      $cpf = $row['cpf'];
+      $celular = $row['celular'];
+      $data = $row['data'];
+      $senha = $row['senha'];
+
+    } else {
+      echo "Nenhum usuário encontrado com o ID $userId";
+    }
+  } else {
+    echo "Erro na consulta: " . mysqli_error($conn);
   }
 }
