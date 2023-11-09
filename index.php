@@ -574,7 +574,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                 </div>
 
                 <div>
-                  <a href="view/pages/logout">
+                  <a href="controller/utils/logout.php">
                     <button>
                       sair
                     </button></a>
