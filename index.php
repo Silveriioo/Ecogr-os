@@ -9,6 +9,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
   $userId = $userdata['id'];
   $userEmail = $userdata['email'];
   $logado = true;
+
+  echo $userId . '<br>' . $userEmail;
 } else {
   $logado = false;
 }
@@ -262,9 +264,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
             </div>
           </div>
 
+
           <div class="space-y-6 border-t border-gray-200 px-4 py-6">
             <div class="flow-root">
+
               <a href="view/pages/conta" class="-m-2 block p-2 font-medium text-gray-900">Conta</a>
+
             </div>
           </div>
 
@@ -553,9 +558,11 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                   </div>
                 </div>
 
+
                 <a href="view/pages/conta" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">Conta</a>
               </div>
             </div>
+
 
 
             <?php
@@ -564,6 +571,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
               <div class="ml-auto flex items-center">
                 <div class="flex -space-x-2 overflow-hidden">
                   <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white " src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                </div>
+
+                <div>
+                  <a href="view/pages/logout">
+                    <button>
+                      sair
+                    </button></a>
                 </div>
               <?php
             }

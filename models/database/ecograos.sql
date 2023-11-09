@@ -49,21 +49,38 @@ END //
 DELIMITER ;
 
 -- Procedimento para Atualizar um Usuário por ID (Update)
-DELIMITER //
-CREATE PROCEDURE AtualizarUsuarioPorID(
-  IN p_id INT,
-  IN p_nome VARCHAR(255),
-  IN p_email VARCHAR(255),
-  IN p_cpf VARCHAR(14),
-  IN p_data DATE,
-  IN p_senha VARCHAR(355)
+CREATE DEFINER=`root`@`localhost` FUNCTION AtualizarUsuarioPorID(
+  p_nome VARCHAR(255),
+  p_email VARCHAR(255),
+  p_cpf CHAR(14),
+  p_celular CHAR(11),
+  p_data DATE,
+  p_id INT
 )
+RETURNS BOOLEAN
 BEGIN
+  DECLARE rows_updated INT;
+
+  IF (SELECT COUNT(*) FROM ecograos.usuarios WHERE celular = p_celular AND id <> p_id) > 0 THEN
+    RETURN FALSE; 
+  END IF;
+
   UPDATE ecograos.usuarios
-  SET nome = p_nome, email = p_email, cpf = p_cpf, data = p_data, senha = p_senha
+  SET nome = p_nome,
+      email = p_email,
+      cpf = p_cpf,
+      celular = p_celular,
+      data = p_data
   WHERE id = p_id;
-END //
-DELIMITER ;
+
+ 
+  SET rows_updated = ROW_COUNT();
+  IF rows_updated > 0 THEN
+    RETURN TRUE; 
+  ELSE
+    RETURN FALSE; 
+  END IF;
+END;
 
 -- Procedimento para Excluir um Usuário por ID (Delete)
 DELIMITER //

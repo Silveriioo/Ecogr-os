@@ -9,6 +9,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
     $userId = $userdata['id'];
     $userEmail = $userdata['email'];
     $logado = true;
+
+    echo $userId .'<br>' . $userEmail;
+    
     include_once('../../controller/utils/functions/funtions.php');
     $userinfo = BuscaUsuarios($userEmail);
     if ($userinfo) {
@@ -18,7 +21,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
         $email = $userinfo['email'];
         $celular = $userinfo['celular'];
     } else {
-        echo "Nenhum usuário encontrado com o email $userEmail";
+        echo "<br>Falha na busca por email $userEmail";
     }
 } else {
     $logado = false;
@@ -41,8 +44,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
     <!-- Jquery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
-    <!-- <script type="module" src="../../controller/script/responsive.js"></script> -->
 </head>
 
 <body>
@@ -234,7 +235,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                     </div>
                 </div>
 
-                <div class="border-b border-gray-900/10 pb-12">
+                <!-- <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Notificações</h2>
                     <p class="mt-1 text-sm leading-6 text-gray-600">Sempre avisaremos você sobre mudanças importantes, mas você escolhe o que mais deseja ouvir.</p>
 
@@ -265,12 +266,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                                 </div>
                         </fieldset>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div class="mt-6 flex items-center justify-end gap-x-6">
-                <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancelar</button>
-                <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Salvar</button>
+                <input type="button" value="Cancelar"  class="text-sm font-semibold leading-6 text-gray-900 cursor-pointer" />
+                <input type="submit" value="Salvar" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"/>
             </div>
         </form>
     </div>
@@ -283,7 +284,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
         });
 
         function backPage() {
-            console.error(error);
             window.history.back();
         }
     </script>

@@ -1,5 +1,4 @@
 <?php
-
 function connection()
 {
   $hostname = '127.0.0.1';
@@ -42,7 +41,7 @@ function LoginModal()
         ></script>
       </head>
       <body class="h-full">
-        <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 z-0">
           <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <!-- <img class="mx-auto h-10 w-auto" src="" alt="Logo compania" /> -->
             <h2
@@ -131,7 +130,7 @@ function RegModal()
     ></script>
   </head>
       <body class="h-full">
-        <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8  z-0">
           <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <!-- <img class="mx-auto h-10 w-auto" src="" alt="Logo compania" /> -->
             <h2
@@ -306,7 +305,7 @@ function RedefineModal()
 
     <script>
       function redirecionarPagina() {
-        window.location.href = "http://localhost/ecograos";
+        window.history.back();
       }
 
       setInterval(redirecionarPagina, 10000);
@@ -336,23 +335,25 @@ function usuarioJaExiste($conn, $campo, $valor)
 
 function CadastroUsuario()
 {
-
   global $conn;
   $conn = connection();
 
-  $nome = $_POST['nome'];
-  $email = $_POST['email'];
-  $cpf = $_POST['cpf'];
+  $nome = isset($_POST['nome']) ? htmlspecialchars($_POST['nome'], ENT_QUOTES, 'UTF-8') : '';
+  $email = isset($_POST['email']) ? filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) : '';
+  $cpf = isset($_POST['cpf']) ? preg_replace('/[^0-9]/', '', $_POST['cpf']) : '';
 
-  if (usuarioJaExiste($conn, 'nome', $nome)) {
+  if (empty($nome) || empty($email) || empty($cpf)) {
+    echo json_encode(['success' => false, 'message' => 'Todos os campos são obrigatórios.']);
+  } elseif (usuarioJaExiste($conn, 'nome', $nome)) {
     echo json_encode(['success' => false, 'message' => 'Nome de usuário já cadastrado.']);
   } elseif (usuarioJaExiste($conn, 'email', $email)) {
     echo json_encode(['success' => false, 'message' => 'Email de usuário já cadastrado.']);
   } elseif (usuarioJaExiste($conn, 'cpf', $cpf)) {
     echo json_encode(['success' => false, 'message' => 'CPF de usuário já cadastrado.']);
   } else {
-    $data = $_POST['data'];
-    $senha = $_POST['senha'];
+    $data = isset($_POST['data']) ? htmlspecialchars($_POST['data'], ENT_QUOTES, 'UTF-8') : '';
+    $senha = isset($_POST['senha']) ? $_POST['senha'] : '';
+
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
     $sql = "SELECT InserirUsuario(?, ?, ?, ?, ?)";
@@ -380,13 +381,14 @@ function CadastroUsuario()
 
 function LoginUsuario()
 {
-
   global $conn;
   $conn = connection();
 
-  $email = $_POST['email'];
+  $email = isset($_POST['email']) ? filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) : '';
 
-  if (usuarioJaExiste($conn, 'email', $email)) {
+  if (empty($email)) {
+    echo json_encode(['success' => false, 'message' => 'Email inválido.']);
+  } elseif (usuarioJaExiste($conn, 'email', $email)) {
 
     $sql = "CALL ObterUsuarioPorEMAIL(?)";
     $stmt = mysqli_prepare($conn, $sql);
@@ -399,30 +401,38 @@ function LoginUsuario()
 
     $result = mysqli_stmt_execute($stmt);
 
-    $result = mysqli_stmt_get_result($stmt);
-    $row = mysqli_fetch_assoc($result);
+    if ($result) {
+      $result = mysqli_stmt_get_result($stmt);
+      $row = mysqli_fetch_assoc($result);
 
-    if ($row) {
+      if ($row) {
+        $hashSenhaArmazenada = $row['senha'];
+        $senhaForm = isset($_POST['senha']) ? $_POST['senha'] : '';
 
-      $hashSenhaArmazenada = $row['senha'];
-      $senhaForm = $_POST['senha'];
+        if (password_verify($senhaForm, $hashSenhaArmazenada)) {
 
-      if (password_verify($senhaForm, $hashSenhaArmazenada)) {
+          session_start();
 
-        session_start();
+          $_SESSION['id'] = $row['id'];
+          $_SESSION['email'] = $row['email'];
 
-        $_SESSION['id'] = $row['id'];
-        $_SESSION['email'] = $row['email'];
-
-        echo json_encode(['success' => true]);
+          echo json_encode(['success' => true]);
+        } else {
+          echo json_encode(['success' => false, 'message' => 'Senha incorreta.']);
+        }
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Usuário não encontrado.']);
       }
     } else {
       echo json_encode(['success' => false, 'message' => 'Erro ao executar a declaração.']);
     }
+
     mysqli_stmt_close($stmt);
   } else {
     echo json_encode(['success' => false, 'message' => 'Email de usuário não cadastrado.']);
   }
+
+  mysqli_close($conn);
 }
 
 function Produtos()
@@ -508,7 +518,6 @@ function BuscaUsuarios($userEmail)
   $result = mysqli_stmt_execute($stmt);
 
   $result = mysqli_stmt_get_result($stmt);
-  $row = mysqli_fetch_assoc($result);
   if ($result) {
     $row = mysqli_fetch_assoc($result);
 
@@ -530,53 +539,93 @@ function BuscaUsuarios($userEmail)
   }
 }
 
-function InfoUser()
+function celularJaExiste($conn, $celular, $id)
 {
-
-  $userinfo = array(
-    "id" => $$_POST['id'],
-    "nome" => $_POST['nome'],
-    "date" => $_POST['date'],
-    "cpf" => $_POST['cpf'],
-    "email" => $_POST['email'],
-    "celular" => $_POST['celular'],
-    "rua" => $_POST['rua'],
-    "cidade" => $_POST['cidade'],
-    "regiao" => $_POST['regiao'],
-    "cep" => $_POST['cep'],
-    "comentarios" => $_POST['comentarios'],
-    "ofertas" => $_POST['ofertas'],
-    "adicional" => $_POST['adicional'],
-  );
-
-  return $userinfo;
-}
-
-function RedefineUser()
-{
-
-  global $conn;
-  $conn = connection();
-
-  $userinfo = InfoUser();
-
-  $sql = 'CALL AtualizarUsuarioPorID(?, ?, ?, ?, ?, ?)';
+  $sql = 'SELECT id FROM ecograos.usuarios WHERE celular = ? AND id <> ?';
   $stmt = mysqli_prepare($conn, $sql);
 
   if ($stmt === false) {
     die("Erro ao preparar a declaração: " . mysqli_error($conn));
   }
 
-  mysqli_stmt_bind_param($stmt, "ssssss", $userinfo['id'], $userinfo['nome'], $userinfo['email'], $userinfo['cpf'], $userinfo['celular'], $userinfo['date']);
+  mysqli_stmt_bind_param($stmt, "ss", $celular, $id);
 
   $result = mysqli_stmt_execute($stmt);
 
+  if ($result) {
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+
+    return !empty($row);
+  } else {
+    return false;
+  }
+
+  mysqli_stmt_close($stmt);
+}
+
+function RedefineUser()
+{
+  global $conn;
+  $conn = connection();
+
+  $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+  $nome = isset($_POST['nome']) ? filter_var($_POST['nome'], FILTER_SANITIZE_STRING) : '';
+  $date = isset($_POST['date']) ? htmlspecialchars($_POST['date'], ENT_QUOTES, 'UTF-8') : '';
+  $cpf = isset($_POST['cpf']) ? filter_var($_POST['cpf'], FILTER_SANITIZE_STRING) : '';
+  $email = isset($_POST['email']) ? filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) : '';
+  $celular = isset($_POST['celular']) ? htmlspecialchars($_POST['celular'], ENT_QUOTES, 'UTF-8') : '';
+
+  if (empty($id) || empty($nome) || empty($date) || empty($cpf) || empty($email) || empty($celular)) {
+    echo json_encode(['success' => false, 'message' => 'Todos os campos são obrigatórios.']);
+    return;
+  }
+
+  if (celularJaExiste($conn, $celular, $id)) {
+    echo json_encode(['success' => false, 'message' => 'Este número de celular já está em uso.']);
+    return;
+  }
+
+  $sql = 'SELECT AtualizarUsuarioPorID(?,?,?,?,?,?)';
+  $stmt = mysqli_prepare($conn, $sql);
+
+  if ($stmt === false) {
+    die("Erro ao preparar a declaração: " . mysqli_error($conn));
+  }
+
+  mysqli_stmt_bind_param($stmt, "ssssss", $nome, $email, $cpf, $celular, $date, $id);
+
+  $result = mysqli_stmt_execute($stmt);
 
   if ($result) {
-    // echo "As informações foram atualizadas com sucesso!";
     echo json_encode(['success' => true]);
   } else {
-    // echo "Ocorreu um erro ao atualizar as informações: " . mysqli_error($conn);
-    echo json_encode(['success' => false, 'message' => 'Ocorreu um erro ao atualizar as informações']);
+    echo json_encode(['success' => false, 'message' => 'Ocorreu um erro ao atualizar as informações: ' . mysqli_error($conn)]);
   }
+
+  mysqli_stmt_close($stmt);
+  mysqli_close($conn);
 }
+
+
+function SessionUser()
+{
+
+  global $conn;
+  $conn = connection();
+
+  session_start();
+}
+
+function Logout() {
+  session_start();
+
+  unset($_SESSION['id']);
+  unset($_SESSION['email']);
+
+  session_destroy();
+
+  header('Location: ../../index');
+  exit();
+}
+

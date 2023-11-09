@@ -14,8 +14,6 @@ $("#redefinir").on("submit", (e) => {
     cidade: $("#cidade").val(),
     regiao: $("#regiao").val(),
     cep: $("#cep").val(),
-    comentarios: $("#comentarios").val(),
-    ofertas: $("#ofertas").val(),
     adicional: $("#adicional").val(),
   };
 

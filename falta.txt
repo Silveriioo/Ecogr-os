@@ -3,4 +3,6 @@ Bloqueio de Conta
 Monitoramento de Logs
 
 
-parei na pagina de conta botao voltar 
+
+adicionar atualizaçoes nas session
+atualizar informaçoes de endereço
