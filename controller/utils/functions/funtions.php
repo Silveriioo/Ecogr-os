@@ -525,10 +525,15 @@ function BuscaUsuarios($userEmail)
       $userinfo = array(
         'id' => $row['id'],
         'nome' => $row['nome'],
-        'email' => $row['email'],
-        'cpf' => $row['cpf'],
-        'celular' => $row['celular'],
         'data' => $row['data'],
+        'cpf' => $row['cpf'],
+        'email' => $row['email'],
+        'celular' => $row['celular'],
+        'rua' => $row['rua'],
+        'cidade' => $row['cidade'],
+        'estado' => $row['estado'],
+        'cep' => $row['cep'],
+        'adicionais' => $row['adicionais']
       );
       return $userinfo;
     } else {
@@ -575,8 +580,13 @@ function RedefineUser()
   $cpf = isset($_POST['cpf']) ? filter_var($_POST['cpf'], FILTER_SANITIZE_STRING) : '';
   $email = isset($_POST['email']) ? filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) : '';
   $celular = isset($_POST['celular']) ? htmlspecialchars($_POST['celular'], ENT_QUOTES, 'UTF-8') : '';
+  $rua = isset($_POST['rua']) ? filter_var($_POST['rua'], FILTER_SANITIZE_STRING) : '';
+  $cidade = isset($_POST['cidade']) ? filter_var($_POST['cidade'], FILTER_SANITIZE_STRING) : '';
+  $regiao = isset($_POST['regiao']) ? filter_var($_POST['regiao'], FILTER_SANITIZE_STRING) : '';
+  $cep = isset($_POST['cep']) ? filter_var($_POST['cep'], FILTER_SANITIZE_STRING) : '';
+  $adicional = isset($_POST['adicional']) ? filter_var($_POST['adicional'], FILTER_SANITIZE_STRING) : '';
 
-  if (empty($id) || empty($nome) || empty($date) || empty($cpf) || empty($email) || empty($celular)) {
+  if (empty($id) || empty($nome) || empty($date) || empty($cpf) || empty($email) || empty($celular) || empty($rua) || empty($cidade) || empty($regiao) || empty($cep)) {
     echo json_encode(['success' => false, 'message' => 'Todos os campos são obrigatórios.']);
     return;
   }
@@ -586,14 +596,14 @@ function RedefineUser()
     return;
   }
 
-  $sql = 'SELECT AtualizarUsuarioPorID(?,?,?,?,?,?)';
+  $sql = 'SELECT AtualizarUsuarioPorID(?,?,?,?,?,?,?,?,?,?,?)';
   $stmt = mysqli_prepare($conn, $sql);
 
   if ($stmt === false) {
     die("Erro ao preparar a declaração: " . mysqli_error($conn));
   }
 
-  mysqli_stmt_bind_param($stmt, "ssssss", $nome, $email, $cpf, $celular, $date, $id);
+  mysqli_stmt_bind_param($stmt, "sssssssssss", $nome, $email, $cpf, $celular, $date, $rua, $cidade, $regiao, $cep, $adicional, $id);
 
   $result = mysqli_stmt_execute($stmt);
 
@@ -607,16 +617,6 @@ function RedefineUser()
   mysqli_close($conn);
 }
 
-
-function SessionUser()
-{
-
-  global $conn;
-  $conn = connection();
-
-  session_start();
-}
-
 function Logout() {
   session_start();
 
@@ -628,4 +628,3 @@ function Logout() {
   header('Location: ../../index');
   exit();
 }
-

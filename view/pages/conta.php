@@ -10,8 +10,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
     $userEmail = $userdata['email'];
     $logado = true;
 
-    echo $userId .'<br>' . $userEmail;
-    
     include_once('../../controller/utils/functions/funtions.php');
     $userinfo = BuscaUsuarios($userEmail);
     if ($userinfo) {
@@ -20,6 +18,11 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
         $cpf = $userinfo['cpf'];
         $email = $userinfo['email'];
         $celular = $userinfo['celular'];
+        $rua = $userinfo['rua'];
+        $cidade = $userinfo['cidade'];
+        $estado = $userinfo['estado'];
+        $cep = $userinfo['cep'];
+        $adicionais = $userinfo['adicionais'];
     } else {
         echo "<br>Falha na busca por email $userEmail";
     }
@@ -87,7 +90,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
             <nav aria-label="Top" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="border-b border-gray-200">
                     <div class="flex h-16 items-center">
-                        <button onclick="backPage()" id="backPage1" class="relative rounded-md bg-white p-2 text-gray-400 lg:hidden">
+                        <button onclick="window.history.back()" id="backPage1" class="relative rounded-md bg-white p-2 text-gray-400 lg:hidden">
                             <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
                                 <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                             </svg>
@@ -95,7 +98,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
 
                         <div class="hidden lg:ml-8 lg:block lg:self-stretch">
                             <div class="flex h-full space-x-8 p-6">
-                                <button onclick="backPage()" id="backPage2">
+                                <button onclick="window.history.back()" id="backPage2">
                                     <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
                                         <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                                     </svg>
@@ -104,7 +107,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                         </div>
 
 
-                        <?php
+                        <!-- <?php
                         if ($logado == true) {
                         ?>
                             <div class="ml-auto flex items-center">
@@ -113,7 +116,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                                 </div>
                             <?php
                         }
-                            ?>
+                            ?> -->
                             </div>
                     </div>
                 </div>
@@ -129,34 +132,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Seu Perfil</h2>
                     <p class="mt-1 text-sm leading-6 text-gray-600">Essas informações serão exibidas somente para fins de pagamento e entrega.</p>
-
-                    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div class="col-span-full">
-                            <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">Foto</label>
-                            <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                                <div class="text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
-                                    </svg>
-                                    <div class="mt-4 flex text-sm leading-6 text-gray-600">
-                                        <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
-                                            <span>Enviar um arquivo</span>
-                                            <input id="upload" name="file-upload" type="file" class="sr-only">
-                                        </label>
-                                        <p class="pl-1">ou arraste e solte</p>
-                                    </div>
-                                    <p class="text-xs leading-5 text-gray-600">PNG, JPG, GIF de até 10MB</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informações pessoais</h2>
                     <p class="mt-1 text-sm leading-6 text-gray-600">Use um endereço permanente onde você possa receber notificações e acompanhar seus pedidos.</p>
 
-                        <input type="hidden" id="id" name="id" value="<?php echo $userId; ?>">
+                    <input type="hidden" id="id" name="id" value="<?php echo $userId; ?>">
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-3">
@@ -199,28 +181,28 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                         <div class="col-span-full">
                             <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Endereço da Rua</label>
                             <div class="mt-2">
-                                <input type="text" name="street-address" id="rua" autocomplete="street-address" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="street-address" id="rua" autocomplete="street-address" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="<?php echo $rua; ?>">
                             </div>
                         </div>
 
                         <div class="sm:col-span-2 sm:col-start-1">
                             <label for="city" class="block text-sm font-medium leading-6 text-gray-900">Cidade</label>
                             <div class="mt-2">
-                                <input type="text" name="city" id="cidade" autocomplete="address-level2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="city" id="cidade" autocomplete="address-level2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="<?php echo $cidade; ?>">
                             </div>
                         </div>
 
                         <div class="sm:col-span-2">
                             <label for="region" class="block text-sm font-medium leading-6 text-gray-900">Estado / Província</label>
                             <div class="mt-2">
-                                <input type="text" name="region" id="regiao" autocomplete="address-level1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="region" id="regiao" autocomplete="address-level1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="<?php echo $estado; ?>">
                             </div>
                         </div>
 
                         <div class="sm:col-span-2">
                             <label for="postal-code" class="block text-sm font-medium leading-6 text-gray-900">CEP / Código Postal</label>
                             <div class="mt-2">
-                                <input type="text" name="postal-code" id="cep" autocomplete="postal-code" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input type="text" name="postal-code" id="cep" autocomplete="postal-code" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="<?php echo $cep; ?>">
                             </div>
                         </div>
 
@@ -228,65 +210,23 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                             <label for="about" class="block text-sm font-medium leading-6 text-gray-900">Adicional<span class="text-xs select-none items-center pl-3 text-gray-500 ">(Opcional)</span></label>
 
                             <div class="mt-2">
-                                <textarea id="adicional" name="about" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                <textarea id="adicional" name="about" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"><?php echo $adicionais; ?></textarea>
                             </div>
                             <p class="mt-3 text-sm leading-6 text-gray-600">Escreva algo importante para que seja util.</p>
                         </div>
                     </div>
                 </div>
-
-                <!-- <div class="border-b border-gray-900/10 pb-12">
-                    <h2 class="text-base font-semibold leading-7 text-gray-900">Notificações</h2>
-                    <p class="mt-1 text-sm leading-6 text-gray-600">Sempre avisaremos você sobre mudanças importantes, mas você escolhe o que mais deseja ouvir.</p>
-
-                    <div class="mt-10 space-y-10">
-                        <fieldset>
-                            <legend class="text-sm font-semibold leading-6 text-gray-900">Por email</legend>
-                            <div class="mt-6 space-y-6">
-                                <div class="relative flex gap-x-3">
-                                    <div class="flex h-6 items-center">
-                                        <input id="comentarios" value="comentarios" name="comentarios" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                                    </div>
-                                    <div class="text-sm leading-6">
-                                        <label for="comentarios" class="font-medium text-gray-900">Comentarios</label>
-                                        <p class="text-gray-500">Seja notificado quando alguém postar um comentário em um produto favorito.</p>
-                                    </div>
-                                </div>
-                                <div class="relative flex gap-x-3">
-
-                                    <div class="relative flex gap-x-3">
-                                        <div class="flex h-6 items-center">
-                                            <input id="ofertas" value="ofertas" name="ofertas" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                                        </div>
-                                        <div class="text-sm leading-6">
-                                            <label for="ofertas" class="font-medium text-gray-900">Ofertas</label>
-                                            <p class="text-gray-500">Seja notificado quando um novo produto ou oferta for anunciado.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                        </fieldset>
-                    </div>
-                </div> -->
             </div>
 
             <div class="mt-6 flex items-center justify-end gap-x-6">
-                <input type="button" value="Cancelar"  class="text-sm font-semibold leading-6 text-gray-900 cursor-pointer" />
-                <input type="submit" value="Salvar" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"/>
+                <input type="button" value="Cancelar" class="text-sm font-semibold leading-6 text-gray-900 cursor-pointer" />
+                <input type="submit" value="Salvar" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer" />
             </div>
         </form>
     </div>
 
     <!-- CONTEUDO -->
 
-    <script>
-        document.getElementById("backPage2").addEventListener("click", function() {
-            backPage();
-        });
 
-        function backPage() {
-            window.history.back();
-        }
-    </script>
-</body>
 
 </html>
