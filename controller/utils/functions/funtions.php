@@ -617,7 +617,8 @@ function RedefineUser()
   mysqli_close($conn);
 }
 
-function Logout() {
+function Logout()
+{
   session_start();
 
   unset($_SESSION['id']);
@@ -627,4 +628,34 @@ function Logout() {
 
   header('Location: ../../index');
   exit();
+}
+
+function Produto()
+{
+  global $conn;
+  $conn = connection();
+  $id = $_GET['id'];
+  $produtos = array();
+
+  $sql = "SELECT * FROM ecograos.produtos WHERE id = ?";
+  $stmt = mysqli_prepare($conn, $sql);
+
+  if ($stmt === false) {
+    die("Erro ao preparar a declaração: " . mysqli_error($conn));
+  }
+
+  mysqli_stmt_bind_param($stmt, "s", $id);
+
+  $result = mysqli_stmt_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
+
+  $produtos = array();
+
+  if ($result && $row = mysqli_fetch_assoc($result)) {
+    $produtos[] = $row;
+  }
+
+  mysqli_stmt_close($stmt);
+
+  return $produtos;
 }

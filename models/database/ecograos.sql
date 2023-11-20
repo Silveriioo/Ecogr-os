@@ -59,14 +59,6 @@ UPDATE CURRENT_TIMESTAMP,
 (id)
 );
 
--- CREATE TABLE ecograos.enderecos (
---   id INT PRIMARY KEY AUTO_INCREMENT,
---   rua VARCHAR(150) NOT NULL,
---   cidade VARCHAR(150) NOT NULL,
---   estado VARCHAR(150) NOT NULL,
---   cep CHAR(50) NOT NULL,
---   adicionais VARCHAR(1000)
--- );
 -- CRUD
 USE ecograos;
 
@@ -187,7 +179,6 @@ END
 DELIMITER ;
 
 
--- PRODUTOS
 
 
 

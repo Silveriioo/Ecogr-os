@@ -151,52 +151,12 @@ $(document).ready(function () {
   });
 });
 
-// Button Menu Filtro
+// Button Logout
 
 $(document).ready(function () {
-  var menuFiltroVisible = false;
+  $("#logout").click(function (e) {
+    e.preventDefault();
 
-  $("#buttonMenuFiltro").click(function (event) {
-    event.stopPropagation(); 
-    if (menuFiltroVisible) {
-      $("#menuFiltro").hide();
-      $("#setaFechada").show();
-      $("#setaAberto").hide();
-
-      menuFiltroVisible = false;
-    } else {
-      $("#menuFiltro").show();
-      menuFiltroVisible = true;
-      $("#setaFechada").hide();
-      $("#setaAberto").show();
-    }
-  });
-
-  $(document).click(function (event) {
-    if (menuFiltroVisible && !$(event.target).closest("#menuFiltro").length) {
-      $("#menuFiltro").hide();
-      $("#setaFechada").show();
-      $("#setaAberto").hide();
-
-      menuFiltroVisible = false;
-    }
+    window.location.href = "controller/utils/logout";
   });
 });
-
-
-buttonMenuLateral
-closeMenuLateral
-menuLateral
-
-// Button Menu Lateral Filtro
-
-$(document).ready(function () {
-  $("#buttonMenuLateral").click(function () {
-    $("#menuLateral").show();
-  });
-
-  $("#closeMenuLateral").click(function () {
-    $("#menuLateral").hide();
-  });
-});
-

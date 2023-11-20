@@ -40,13 +40,29 @@ $("#redefinir").on("submit", (e) => {
     dataType: "json",
     success: function (response) {
       if (response.success) {
-        location.reload();
+        $("#ModelSuccess").show();
       } else {
         alert(response.message);
       }
     },
     error: function (xhr, status, error) {
-      console.log("Erro na requisição AJAX: " + error + "||" + status + "||" + xhr);
+      console.log(
+        "Erro na requisição AJAX: " + error + "||" + status + "||" + xhr
+      );
     },
+  });
+});
+
+$(document).ready(function () {
+  $("#Confirm").click(function (e) {
+    e.preventDefault();
+
+    $("#ModelSuccess").hide();
+  });
+
+  $("#Cancel").click(function (e) {
+    e.preventDefault();
+
+    history.back();
   });
 });
