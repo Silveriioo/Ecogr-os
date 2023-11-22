@@ -3,7 +3,7 @@ function connection()
 {
   $hostname = '127.0.0.1';
   $username = 'root';
-  $password = '';
+  $password = '16f02m#21j04t';
   $database = 'ecograos';
 
   global $conn;
@@ -458,7 +458,7 @@ function Produtos()
 
     if ($row) {
       $produtos[] = $row;
-    }
+    } 
 
     mysqli_stmt_close($stmt);
   }
