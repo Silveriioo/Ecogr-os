@@ -107,16 +107,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
                         </div>
 
 
-                        <!-- <?php
-                                if ($logado == true) {
-                                ?>
-                            <div class="ml-auto flex items-center">
-                                <div class="flex -space-x-2 overflow-hidden">
-                                    <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white " src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                                </div>
-                            <?php
-                                }
-                            ?> -->
+
                     </div>
                 </div>
     </div>
@@ -220,7 +211,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['email'])) {
 
             <div class="mt-6 flex items-center justify-end gap-x-6">
                 <!-- <input type="button" value="Cancelar" class="text-sm font-semibold leading-6 text-gray-900 cursor-pointer" /> -->
-                <button id="Cancel" type="button"  class="text-sm font-semibold leading-6 text-gray-900 cursor-pointer">Cancelar</button>
+                <button id="Cancel" type="button" class="text-sm font-semibold leading-6 text-gray-900 cursor-pointer">Cancelar</button>
                 <input type="submit" value="Salvar" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer" />
             </div>
         </form>

@@ -27,6 +27,7 @@ function LoginModal()
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script type="module" src="controller/script/authLogin.js"></script>
+    <script type="module" src="../../controller/script/authLogin.js"></script>
         <title>Login</title>
         <!-- TailwindCss -->
         <script src="https://cdn.tailwindcss.com"></script>
@@ -116,6 +117,7 @@ function RegModal()
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module" src="controller/script/authReg.js"></script>
+    <script type="module" src="../../controller/script/authReg.js"></script>
     <title>Cadastro</title>
     <!-- TailwindCss -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -458,7 +460,7 @@ function Produtos()
 
     if ($row) {
       $produtos[] = $row;
-    } 
+    }
 
     mysqli_stmt_close($stmt);
   }
@@ -658,4 +660,333 @@ function Produto()
   mysqli_stmt_close($stmt);
 
   return $produtos;
+}
+
+function CompraCarrinho()
+{
+  global $conn;
+  $conn = connection();
+
+  $idProduto = $_POST["id"];
+  $quantidade = $_POST["quantidade"];
+
+  $sql = "SELECT * FROM ecograos.produtos WHERE id = ?";
+  $stmt = mysqli_prepare($conn, $sql);
+  if ($stmt === false) {
+    die("Falha na preparação da busca: " . mysqli_error($conn));
+  }
+  mysqli_stmt_bind_param($stmt, "s", $idProduto);
+  $executeResult = mysqli_stmt_execute($stmt);
+  if ($executeResult === false) {
+    die("Falha na execução da busca: " . mysqli_error($conn));
+  }
+
+  $result = mysqli_stmt_get_result($stmt);
+  $produto = array();
+  if ($result && $row = mysqli_fetch_assoc($result)) {
+    $produto[] = $row;
+
+    $userid = $_POST['user'];
+
+    $sqlInserir = "CALL InserirPedido(?, ?, ?, ?)";
+    $stmtInserir = mysqli_prepare($conn, $sqlInserir);
+    mysqli_stmt_bind_param($stmtInserir, "ssss", $userid, $idProduto, $quantidade, $row['valor']);
+    $executeInserir = mysqli_stmt_execute($stmtInserir);
+
+    if ($executeInserir === false) {
+      die("Erro ao inserir pedido: " . mysqli_error($conn));
+    }
+
+    if ($executeInserir) {
+      echo json_encode(['success' => true]);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Erro ao inserir pedido.']);
+    }
+  }
+}
+
+function Carrinho($userId)
+{
+  global $conn;
+  $conn = connection();
+
+  $sql_pedidos = "SELECT * FROM ecograos.pedidos WHERE usuario_id = ?";
+  $stmt_pedidos = mysqli_prepare($conn, $sql_pedidos);
+  mysqli_stmt_bind_param($stmt_pedidos, "s", $userId);
+  mysqli_stmt_execute($stmt_pedidos);
+  $result_pedidos = mysqli_stmt_get_result($stmt_pedidos);
+
+  $carrinho = array();
+
+  while ($pedido = mysqli_fetch_assoc($result_pedidos)) {
+    $sql_produto = "SELECT * FROM ecograos.produtos WHERE id = ?";
+    $stmt_produto = mysqli_prepare($conn, $sql_produto);
+    mysqli_stmt_bind_param($stmt_produto, "s", $pedido['produto_id']);
+    mysqli_stmt_execute($stmt_produto);
+    $result_produto = mysqli_stmt_get_result($stmt_produto);
+    $produto = mysqli_fetch_assoc($result_produto);
+
+    $carrinho[] = array(
+      'pedido' => $pedido,
+      'produto' => $produto
+    );
+  }
+
+  $html = "<ul role='list' class='-my-6 divide-y divide-gray-200'>";
+  foreach ($carrinho as $item) {
+    $html .= "
+      <li class='flex py-6'>
+        <div class='h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200'>
+          <img src='" . $item['produto']['imagens'] . "' alt='produtos.' class='h-full w-full object-cover object-center' />
+        </div>
+        <div class='ml-4 flex flex-1 flex-col'>
+          <div>
+            <div class='flex justify-between text-base font-medium text-gray-900'>
+              <h3>
+                <a href='#'>" . $item['produto']['nome'] . "</a>
+              </h3>
+              <p class='ml-4'>" . $item['produto']['valor'] . "</p>
+            </div>
+          </div>
+          <div class='flex flex-1 items-end justify-between text-sm'>
+            <p class='text-gray-500'>" . $item['pedido']['quantidade'] . "</p>
+            <div class='flex'>
+            <form class='form-remover'>
+        <button value='" . $item['pedido']['id'] . "' class='btn-remover font-medium text-indigo-600 hover:text-indigo-500'>
+          Remover
+        </button>
+      </form>
+            </div>
+          </div>
+        </div>
+      </li>
+      
+      
+    ";
+  }
+  $html .= "
+  <script type='module' src='controller/script/removerCarrinho.js'></script>
+  <script type='module' src='../../controller/script/removerCarrinho.js'></script>
+  </ul>";
+
+  echo $html;
+}
+
+function removerCarrinho()
+{
+  global $conn;
+  $conn = connection();
+
+  $id = $_POST['id'];
+
+  $sql = 'CALL RemoverPedidoPorId(?)';
+  $stmt = mysqli_prepare($conn, $sql);
+  mysqli_stmt_bind_param($stmt, 's', $id);
+  $success = mysqli_stmt_execute($stmt);
+
+  if ($success) {
+    echo json_encode(['success' => true]);
+  } else {
+    echo json_encode(['success' => false, 'message' => mysqli_error($conn)]);
+  }
+}
+
+function ValorPorUsuario($userId)
+{
+  global $conn;
+  $conn = connection();
+
+  $sql = "SELECT quantidade, valor_total FROM ecograos.pedidos WHERE usuario_id = ?";
+  $stmt = mysqli_prepare($conn, $sql);
+
+  if ($stmt === false) {
+    die("Falha na consulta: " . mysqli_error($conn));
+  }
+
+  mysqli_stmt_bind_param($stmt, "i", $userId);
+
+  $result = mysqli_stmt_execute($stmt);
+
+  if ($result === false) {
+    die("Falha ao executar a consulta: " . mysqli_error($conn));
+  }
+
+  $result = mysqli_stmt_get_result($stmt);
+
+  $ValorTotal = 0;
+
+  while ($row = mysqli_fetch_assoc($result)) {
+    $totalItens = $row['quantidade'];
+    $totalValor = $row['valor_total'];
+
+    $ValorTotal += $totalItens * $totalValor;
+  }
+
+  return $ValorTotal;
+}
+
+function FinalizarCarrinho($userId)
+{
+  global $conn;
+  $conn = connection();
+
+  $sql_pedidos = "SELECT * FROM ecograos.pedidos WHERE usuario_id = ?";
+  $stmt_pedidos = mysqli_prepare($conn, $sql_pedidos);
+  mysqli_stmt_bind_param($stmt_pedidos, "s", $userId);
+  mysqli_stmt_execute($stmt_pedidos);
+  $result_pedidos = mysqli_stmt_get_result($stmt_pedidos);
+
+  $carrinho = array();
+  $itens = '';
+
+  while ($pedido = mysqli_fetch_assoc($result_pedidos)) {
+    $sql_produto = "SELECT * FROM ecograos.produtos WHERE id = ?";
+    $stmt_produto = mysqli_prepare($conn, $sql_produto);
+    mysqli_stmt_bind_param($stmt_produto, "s", $pedido['produto_id']);
+    mysqli_stmt_execute($stmt_produto);
+    $result_produto = mysqli_stmt_get_result($stmt_produto);
+    $produto = mysqli_fetch_assoc($result_produto);
+
+    $carrinho[] = array(
+      'pedido' => $pedido,
+      'produto' => $produto
+    );
+
+    $itens .= "Você está comprando um(a) " . $produto['nome'] . " do valor de " . $produto['valor'] . " com a quantidade de " . $pedido['quantidade'] . " unidades. ";
+    $itens .= "Valor total por item de R$ " . ($pedido['quantidade'] * $produto['valor']) . PHP_EOL;
+  }
+  $itens .= "Valor total é de R$" . ValorPorUsuario($userId) . "";
+  echo $itens;
+}
+
+function Boleto()
+{
+  global $conn;
+  $conn = connection();
+  $userId = $_POST['id'];
+
+  $sql = 'SELECT * FROM ecograos.usuarios WHERE id = ?';
+  $stmt = mysqli_prepare($conn, $sql);
+  $stmt->bind_param('s', $userId);
+  $stmt->execute();
+  $result = mysqli_stmt_get_result($stmt);
+  $row = mysqli_fetch_assoc($result);
+  if ($row) {
+    $dados[] = $row;
+
+    $dataAtual = new DateTime();
+    $dataAtual->modify('+5 days');
+
+    $dataVencimento = $dataAtual->format('Y-m-d');
+    $valor = ValorPorUsuario($userId);
+    $nossoNumero = '123456789';
+    $numeroDocumento = '000001';
+
+    $nomeSacado = $dados[0]['nome'];
+    $enderecoSacado = $dados[0]['rua'];
+    $cepSacado = $dados[0]['cep'];
+    $cidadeSacado = $dados[0]['cidade'];
+    $ufSacado = $dados[0]['estado'];
+    $cpfSacado = $dados[0]['cpf'];
+
+    $nomeCedente = 'Ecograos';
+    $cnpjCedente = '12.345.678/0001-90';
+    $bancoCedente = '4637';
+    $agenciaCedente = '1234';
+    $contaCedente = '56789';
+
+    $dataAtual = date('d-m-Y');
+
+    function modulo11($num)
+    {
+      $numInvertido = strrev($num);
+      $multiplicadores = [2, 3, 4, 5, 6, 7, 8, 9];
+      $soma = 0;
+
+      foreach (str_split($numInvertido) as $key => $char) {
+        $multiplicador = $multiplicadores[$key % count($multiplicadores)];
+        $soma += intval($char) * $multiplicador;
+      }
+
+      $resto = $soma % 11;
+      return $resto < 2 ? 0 : 11 - $resto;
+    }
+
+    $banco = '001';
+    $moeda = '9';
+    $fatorVencimento = (strtotime($dataVencimento) - strtotime('1997-10-07')) / (60 * 60 * 24);
+    $fatorVencimento = str_pad($fatorVencimento, 4, '0', STR_PAD_LEFT);
+    $valor = str_pad(number_format($valor, 2, '', ''), 10, '0', STR_PAD_LEFT);
+    $campoLivre = str_pad($bancoCedente, 4, '0', STR_PAD_LEFT) . modulo11($agenciaCedente) . substr($contaCedente, 0, 8) . modulo11(substr($contaCedente, 0, 8)) . substr($contaCedente, 8) . modulo11(substr($contaCedente, 8)) . str_pad($nossoNumero, 13, '0', STR_PAD_LEFT);
+
+    $codigoBarras = $banco . $moeda . $fatorVencimento . $valor . $campoLivre . modulo11($banco . $moeda . $fatorVencimento . $valor . $campoLivre);
+
+    echo json_encode(['success' => true]);
+    return $codigoBarras;
+  } else {
+    echo json_encode(['success' => false, 'message' => 'Erro ao obter dados do usuário']);
+  }
+}
+
+function GerandoBoleto($userId)
+{
+  $codigoBarras = "00199548000025998746373567892000001234567896";
+
+  $html = '
+      
+  
+      <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                  <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                      <div class="sm:flex sm:items-start">
+  
+                          <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                              <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Boleto
+                                  gerado</h3>
+                              <h4>Codigo: ' . $codigoBarras  . '</h4>
+                              <h3 class="text-base font-semibold leading-6 text-gray-900">Clique em continuar e você será redirecionado a pagina inicial.</h3>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                  <script type="module" src="controller/script/Finalizacao.js"></script>
+                  <script type="module" src="../../controller/script/Finalizacao.js"></script>              
+                  <form id="Confirm" method="post">
+                  <input type="hidden" id="id" value="' . $userId . '">
+                    <button id="Confirm1" type="submit" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Continuar</button>
+                    </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+  
+      ';
+  echo $html;
+}
+
+function FinalizandoCompra()
+{
+
+  $userId = $_POST['id'];
+
+  global $conn;
+  $conn = connection();
+
+  $sql = 'DELETE FROM pedidos WHERE usuario_id = ?';
+  $stmt = mysqli_prepare($conn, $sql);
+
+  if ($stmt === false) {
+    die("Erro ao preparar a declaração: " . mysqli_error($conn));
+  }
+
+  mysqli_stmt_bind_param($stmt, "s", $userId);
+
+  $result = mysqli_stmt_execute($stmt);
+
+  if ($result) {
+    echo json_encode(['success' => true]);
+  } else {
+    echo json_encode(['success' => false, 'message' => 'Falha ao apagar o pedido']);
+  }
 }
