@@ -3,7 +3,7 @@ function connection()
 {
   $hostname = '127.0.0.1';
   $username = 'root';
-  $password = '16f02m#21j04t';
+  $password = '';
   $database = 'ecograos';
 
   global $conn;
